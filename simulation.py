@@ -3,34 +3,33 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from matplotlib.animation import FuncAnimation
 
-class PredatorPreySimulation:
+class FollowCarSimulation:
     """
-    This class simulates a predator-prey interaction where multiple hunters chase a fleeing prey.
-    Sliders allow dynamically adjusting the number of hunters and the safe distance threshold.
+    This class simulates a follow car interaction where multiple follower cars follow a lead car.
+    Sliders allow dynamically adjusting the number of follower cars and the safe distance threshold.
     """
-    def __init__(self, num_agents=3, safe_distance=1.0, hunter_speed=0.05, prey_speed=0.03,
-                 repulsion_strength=0.1, area_size=10):
-        self.num_agents = num_agents
+    def __init__(self, num_followers=3, safe_distance=1.0, follower_speed=0.05, lead_speed=0.03, repulsion_strength=0.1, area_size=10):
+        self.num_followers = num_followers
         self.safe_distance = safe_distance
-        self.hunter_speed = hunter_speed
-        self.prey_speed = prey_speed
+        self.follower_speed = follower_speed
+        self.lead_speed = lead_speed
         self.repulsion_strength = repulsion_strength
         self.area_size = area_size
 
-        # Agent positions: hunters are stored in a (num_agents, 2) array and prey as a 2D point.
-        self.hunters = None  
-        self.prey = None  
+        # Car positions: followers are stored in a (num_followers, 2) array and lead car as a 2D point.
+        self.followers = None  
+        self.lead_car = None  
 
-        # Matplotlib patches to represent agents.
-        self.hunter_patches = []
-        self.prey_patch = None
+        # Matplotlib patches to represent cars.
+        self.follower_patches = []
+        self.lead_patch = None
 
         # Create figure and axis.
         self.fig, self.ax = plt.subplots()
         plt.subplots_adjust(left=0.1, bottom=0.3)
 
         # Initialize sliders (configured later)
-        self.slider_num_agents = None
+        self.slider_num_followers = None
         self.slider_safe_distance = None
 
         self._initialize_positions()
@@ -38,21 +37,21 @@ class PredatorPreySimulation:
         self._setup_sliders()
 
     def _initialize_positions(self):
-        """Randomly initialize positions for hunters and prey within the simulation area."""
-        self.hunters = np.random.rand(self.num_agents, 2) * self.area_size
-        self.prey = np.random.rand(2) * self.area_size
+        """Randomly initialize positions for followers and lead car within the simulation area."""
+        self.followers = np.random.rand(self.num_followers, 2) * self.area_size
+        self.lead_car = np.random.rand(2) * self.area_size
 
-    def create_triangle(self, position, direction, color):
+    def create_car(self, position, direction, color):
         """
-        Create a matplotlib.Polygon representing an agent as a triangle.
+        Create a matplotlib.Polygon representing a car as a triangle.
         
         Args:
-            position (np.array): 2D coordinates of the agent.
-            direction (np.array): 2D vector indicating the agent's facing.
-            color (str): Color string for the agent.
+            position (np.array): 2D coordinates of the car.
+            direction (np.array): 2D vector indicating the car's facing.
+            color (str): Color string for the car.
             
         Returns:
-            plt.Polygon: A polygon patch representing the agent.
+            plt.Polygon: A polygon patch representing the car.
         """
         norm = np.linalg.norm(direction)
         if norm == 0:
@@ -62,121 +61,73 @@ class PredatorPreySimulation:
         # Base triangle shape.
         triangle = np.array([[0, 0], [-0.2, -0.1], [-0.2, 0.1]])
         # Create a 2D rotation matrix.
-        rotation_matrix = np.array([[unit_direction[0], -unit_direction[1]],
-                                    [unit_direction[1], unit_direction[0]]])
+        rotation_matrix = np.array([[unit_direction[0], -unit_direction[1]], [unit_direction[1], unit_direction[0]]])
         rotated_triangle = triangle.dot(rotation_matrix)
         rotated_triangle += position
         return plt.Polygon(rotated_triangle, closed=True, color=color)
 
     def _setup_plot(self):
-        """Initialize the plot with agent patches."""
+        """Initialize the plot with car patches."""
         self.ax.set_xlim(0, self.area_size)
         self.ax.set_ylim(0, self.area_size)
-        # Create hunter patches.
-        self.hunter_patches = []
-        for i in range(self.num_agents):
-            patch = self.create_triangle(self.hunters[i], np.array([1, 1]), 'blue')
-            self.hunter_patches.append(patch)
+        # Create follower patches.
+        self.follower_patches = []
+        for i in range(self.num_followers):
+            patch = self.create_car(self.followers[i], np.array([1, 1]), 'blue')
+            self.follower_patches.append(patch)
             self.ax.add_patch(patch)
-        # Create prey patch.
-        self.prey_patch = self.create_triangle(self.prey, np.array([1, 1]), 'red')
-        self.ax.add_patch(self.prey_patch)
+        # Create lead patch.
+        self.lead_patch = self.create_car(self.lead_car, np.array([1, 1]), 'red')
+        self.ax.add_patch(self.lead_patch)
 
     def _setup_sliders(self):
-        """Set up sliders to control the number of agents and safe distance threshold."""
-        ax_num_agents = plt.axes([0.2, 0.1, 0.6, 0.03])
+        """Set up sliders to control the number of followers and safe distance threshold."""
+        ax_num_followers = plt.axes([0.2, 0.1, 0.6, 0.03])
         ax_safe_distance = plt.axes([0.2, 0.15, 0.6, 0.03])
-        self.slider_num_agents = Slider(ax_num_agents, 'Number of Agents', 1, 5,
-                                        valinit=self.num_agents, valstep=1)
-        self.slider_safe_distance = Slider(ax_safe_distance, 'Safe Distance', 0.5, 5.0,
-                                           valinit=self.safe_distance)
+        self.slider_num_followers = Slider(ax_num_followers, 'Number of Followers', 1, 5, valinit=self.num_followers, valstep=1)
+        self.slider_safe_distance = Slider(ax_safe_distance, 'Safe Distance', 0.5, 5.0, valinit=self.safe_distance)
 
     def update(self, frame):
         """
         Update function called for each frame of the animation.
-        It updates positions of agents, handles slider changes, and updates the visualization.
+        It updates positions of cars, handles slider changes, and updates the visualization.
         """
-        # Update number of agents if slider has been modified.
-        new_num_agents = int(self.slider_num_agents.val)
-        if new_num_agents != self.num_agents:
-            self.num_agents = new_num_agents
-            self._reinitialize_agents()
+        # Update number of followers if slider has been modified.
+        new_num_followers = int(self.slider_num_followers.val)
+        if new_num_followers != self.num_followers:
+            self.num_followers = new_num_followers
+            self._reinitialize_cars()
 
         # Update safe distance from slider.
         self.safe_distance = self.slider_safe_distance.val
 
-        # Prey behavior: Move away from the closest hunter.
-        distances = np.linalg.norm(self.hunters - self.prey, axis=1)
-        closest_idx = np.argmin(distances)
-        direction_vector = self.prey - self.hunters[closest_idx]
-        norm_val = np.linalg.norm(direction_vector)
-        if norm_val != 0:
-            self.prey += (direction_vector / norm_val) * self.prey_speed
+        # Lead car behavior: Move along a predefined path.
+        self.lead_car += np.array([self.lead_speed, 0])
+        self.lead_car = np.mod(self.lead_car, self.area_size)  # Wrap around the area.
 
-        # Hunter behavior: Move toward the prey and apply repulsion if too close to another hunter.
-        for i in range(self.num_agents):
-            direction_to_prey = self.prey - self.hunters[i]
-            norm_dir = np.linalg.norm(direction_to_prey)
+        # Follower car behavior: Move toward the lead car and apply repulsion if too close to another follower.
+        for i in range(self.num_followers):
+            direction_to_lead = self.lead_car - self.followers[i]
+            norm_dir = np.linalg.norm(direction_to_lead)
             if norm_dir != 0:
-                self.hunters[i] += (direction_to_prey / norm_dir) * self.hunter_speed
-            # Avoid collisions with other hunters.
-            for j in range(self.num_agents):
+                self.followers[i] += (direction_to_lead / norm_dir) * self.follower_speed
+            # Avoid collisions with other followers.
+            for j in range(self.num_followers):
                 if i != j:
-                    diff = self.hunters[i] - self.hunters[j]
+                    diff = self.followers[i] - self.followers[j]
                     distance = np.linalg.norm(diff)
                     if distance < 1.0 and distance != 0:
-                        self.hunters[i] += (diff / distance) * self.repulsion_strength
+                        self.followers[i] += (diff / distance) * self.repulsion_strength
 
-        # Update hunter patches.
-        for i in range(self.num_agents):
-            agent_direction = self.prey - self.hunters[i]
-            norm_agent = np.linalg.norm(agent_direction)
-            if norm_agent == 0:
-                agent_direction = np.array([1, 0])
+        # Update follower patches.
+        for i in range(self.num_followers):
+            car_direction = self.lead_car - self.followers[i]
+            norm_car = np.linalg.norm(car_direction)
+            if norm_car == 0:
+                car_direction = np.array([1, 0])
             else:
-                agent_direction = agent_direction / norm_agent
-            new_poly = self.create_triangle(self.hunters[i], agent_direction, 'blue')
-            self.hunter_patches[i].set_xy(new_poly.get_xy())
+                car_direction = car_direction / norm_car
+            new_poly = self.create_car(self.followers[i], car_direction, 'blue')
+            self.follower_patches[i].set_xy(new_poly.get_xy())
 
-        # Update prey patch.
-        flee_direction = self.hunters[closest_idx] - self.prey
-        norm_flee = np.linalg.norm(flee_direction)
-        if norm_flee == 0:
-            flee_direction = np.array([1, 0])
-        else:
-            flee_direction = flee_direction / norm_flee
-        new_prey_poly = self.create_triangle(self.prey, flee_direction, 'red')
-        self.prey_patch.set_xy(new_prey_poly.get_xy())
-
-        # Check if prey is caught.
-        if np.min(distances) < self.safe_distance:
-            print("Prey caught!")
-            plt.close()
-
-        return self.hunter_patches + [self.prey_patch]
-
-    def _reinitialize_agents(self):
-        """Reinitialize agent positions and update plot patches after slider change."""
-        # Remove all existing patches.
-        for patch in self.hunter_patches:
-            patch.remove()
-        self.prey_patch.remove()
-        # Initialize new positions.
-        self._initialize_positions()
-        # Re-create patches.
-        self.hunter_patches = []
-        for i in range(self.num_agents):
-            patch = self.create_triangle(self.hunters[i], np.array([1, 1]), 'blue')
-            self.hunter_patches.append(patch)
-            self.ax.add_patch(patch)
-        self.prey_patch = self.create_triangle(self.prey, np.array([1, 1]), 'red')
-        self.ax.add_patch(self.prey_patch)
-
-    def run(self):
-        """Starts the simulation animation."""
-        ani = FuncAnimation(self.fig, self.update, frames=200, interval=50, blit=True)
-        plt.show()
-
-if __name__ == "__main__":
-    simulation = PredatorPreySimulation()
-    simulation.run()
+        # Update lead patch ▋
