@@ -1,11 +1,3 @@
-Absolutely! Here's a **draft introduction** for your GitHub repository. It explains the purpose of the simulation, its features, and links to your paper. Feel free to modify it as needed.
-
----
-
-### **GitHub Repository Introduction**
-
-#### **Pursuit-Evasion Simulation with Adjustable Agents and Safe Distance**
-
 Welcome to the **Pursuit-Evasion Simulation** repository! This project implements a simplified computational model of collective pursuit-evasion behavior, inspired by natural systems like flocks of birds, schools of fish, and swarms of insects. The simulation demonstrates how multiple agents (hunters) can pursue a single target (prey) while avoiding collisions with each other.
 
 This simulation is based on the mathematical model presented in the paper:  
@@ -113,7 +105,3 @@ Enjoy exploring the fascinating world of pursuit-evasion dynamics! 🚀
 
 📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://example.com/link-to-your-paper)**  
 (Replace the link with the actual link to your paper.)
-
----
-
-Feel free to customize this introduction to better fit your style or add any additional details about your project. Good luck with your GitHub post! 🎉
