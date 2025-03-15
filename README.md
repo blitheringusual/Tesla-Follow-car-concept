@@ -1,7 +1,7 @@
 Welcome to the **Pursuit-Evasion Simulation** repository! This project implements a simplified computational model of collective pursuit-evasion behavior, inspired by natural systems like flocks of birds, schools of fish, and swarms of insects. The simulation demonstrates how multiple agents (hunters) can pursue a single target (prey) while avoiding collisions with each other.
 
 This simulation is based on the mathematical model presented in the paper:  
-📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://example.com/link-to-your-paper)**  
+📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://drive.google.com/file/d/1Q7KlRvrfYeQtEi9H9TXWkYBiMHWxr623/view?usp=drivesdk)**
 (Replace the link with the actual link to your paper.)
 
 ---
@@ -84,7 +84,7 @@ If you'd like to contribute to this project, feel free to:
 ### **Acknowledgments**
 
 This project is inspired by the paper:  
-📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://example.com/link-to-your-paper)**  
+📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://drive.google.com/file/d/1Q7KlRvrfYeQtEi9H9TXWkYBiMHWxr623/view?usp=drivesdk)** 
 (Replace the link with the actual link to your paper.)
 
 Special thanks to the open-source community for providing the tools and libraries that made this project possible.
@@ -103,5 +103,4 @@ Enjoy exploring the fascinating world of pursuit-evasion dynamics! 🚀
 
 ### **Link to Paper**
 
-📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://example.com/link-to-your-paper)**  
-(Replace the link with the actual link to your paper.)
+📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://drive.google.com/file/d/1Q7KlRvrfYeQtEi9H9TXWkYBiMHWxr623/view?usp=drivesdk)**
