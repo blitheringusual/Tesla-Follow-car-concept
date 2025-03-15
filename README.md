@@ -84,7 +84,6 @@ If you'd like to contribute to this project, feel free to:
 
 This project is inspired by the paper:  
 📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://drive.google.com/file/d/1Q7KlRvrfYeQtEi9H9TXWkYBiMHWxr623/view?usp=drivesdk)** 
-(Replace the link with the actual link to your paper.)
 
 Special thanks to the open-source community for providing the tools and libraries that made this project possible.
 
