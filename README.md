@@ -2,7 +2,6 @@ Welcome to the **Pursuit-Evasion Simulation** repository! This project implement
 
 This simulation is based on the mathematical model presented in the paper:  
 📄 **[Simplified Pursuit-Evasion Model: A Mathematical Approach for Research and Education](https://drive.google.com/file/d/1Q7KlRvrfYeQtEi9H9TXWkYBiMHWxr623/view?usp=drivesdk)**
-(Replace the link with the actual link to your paper.)
 
 ---
 
